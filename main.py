@@ -44,7 +44,7 @@ def go_left():
 drawing_board = turtle.Screen()
 drawing_board.setup(WIDTH, HEIGHT)
 drawing_board.title("Snake")
-drawing_board.bgcolor("cyan")
+drawing_board.bgcolor("yellow")
 drawing_board.tracer(0)  # TURN OFF AUTO-ANIMATION
 
 # EVENT HANDLERS
@@ -57,17 +57,8 @@ drawing_board.onkey(go_left, "Left")
 # CREATE A TURTLE
 slithery_snake = turtle.Turtle()
 slithery_snake.shape("square")
-slithery_snake.color("yellow")
+slithery_snake.color("cyan")
 slithery_snake.penup()  # TO PREVENT MARKING WHILE MOVING
-
-# CREATE SNAKE AS A LIST OF PAIRED COORDINATES
-snake = [[0, 0], [20, 0], [40, 0], [60, 0]]
-snake_direction = "up"
-
-# DRAW INITIAL SNAKE
-for segment in snake:
-    slithery_snake.goto(segment[0], segment[1])
-    slithery_snake.stamp()
 
 
 # MOVE THE SNAKE
@@ -81,7 +72,7 @@ def game_loop():
     # CHECK FOR COLLISIONS
     if new_head in snake or new_head[0] < - WIDTH / 2 or new_head[0] > WIDTH / 2 \
             or new_head[1] < - HEIGHT / 2 or new_head[1] > HEIGHT / 2:
-        turtle.bye()  # END THE GAME IF THE SNAKE COLLIDES WITH ITSELF OR THE EDGES
+        reset_snake()  # END THE GAME IF THE SNAKE COLLIDES WITH ITSELF OR THE EDGES
     else:
         # MOVE THE SNAKE
         snake.append(new_head)  # MOVE THE HEAD OF THE SNAKE
@@ -96,6 +87,7 @@ def game_loop():
             slithery_snake.stamp()
 
     # REFRESH THE SCREEN
+    drawing_board.title(f"Snake Game: Your Score is {score}!")
     drawing_board.update()
 
     # REPEAT THE PROCESS AS NECESSARY
@@ -107,8 +99,9 @@ def food_chomp():
     This function will check whether the snake has successfully eaten a food item.
     :return:
     """
-    global food_spot
+    global food_spot, score
     if get_distance(snake[-1], food_spot) < 20:
+        score += 1          # increment score
         food_spot = get_random_food_spot()
         food.goto(food_spot)
         return True
@@ -136,17 +129,33 @@ def get_distance(position1, position2):
     return distance
 
 
+def reset_snake():
+    global score, snake, snake_direction, food_spot
+
+    # CALIBRATE SCOREBOARD
+    score = 0
+
+    # CREATE SNAKE AS A LIST OF PAIRED COORDINATES
+    snake = [[0, 0], [20, 0], [40, 0], [60, 0]]
+    snake_direction = "up"
+
+    # GENERATE FOOD
+    food_spot = get_random_food_spot()
+    food.goto(food_spot)
+
+    game_loop()
+
+
 # FOOD
 food = turtle.Turtle()
 food.shape("circle")
 food.color("blue")
 food.shapesize(FOOD_SIZE / 20)
 food.penup()
-food_spot = get_random_food_spot()
-food.goto(food_spot)
+
 
 # BEGIN ANIMATION
-game_loop()
+reset_snake()
 
 # STOP THE PROGRAM
 turtle.done()
