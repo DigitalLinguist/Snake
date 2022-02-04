@@ -6,7 +6,7 @@ import random
 WIDTH = 650
 HEIGHT = 650
 DELAY = 200  # MILLISECONDS BETWEEN FRAME UPDATES
-FOOD_SIZE = 25
+FOOD_SIZE = 30
 
 offsets = {
     "up": (0, 20),
@@ -154,6 +154,7 @@ food.penup()
 
 # BEGIN ANIMATION
 reset_snake()
+
 
 # STOP THE PROGRAM
 turtle.done()
