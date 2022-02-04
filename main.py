@@ -1,12 +1,12 @@
-# IMPORT TURTLE GRAPHICS MODULE
+# IMPORT NECESSARY MODULES
 import turtle
 import random
 
 # DEFINE CONSTANTS
-WIDTH = 500
-HEIGHT = 500
+WIDTH = 650
+HEIGHT = 650
 DELAY = 200  # MILLISECONDS BETWEEN FRAME UPDATES
-FOOD_SIZE = 10
+FOOD_SIZE = 25
 
 offsets = {
     "up": (0, 20),
@@ -16,49 +16,27 @@ offsets = {
 }
 
 
-def go_up():
+def bind_direction_keys():
+    drawing_board.onkey(lambda: set_snake_direction("up"), "Up")
+    drawing_board.onkey(lambda: set_snake_direction("right"), "Right")
+    drawing_board.onkey(lambda: set_snake_direction("down"), "Down")
+    drawing_board.onkey(lambda: set_snake_direction("left"), "Left")
+
+
+def set_snake_direction(direction):
     global snake_direction
-    if snake_direction != "down":
-        snake_direction = "up"
-
-
-def go_right():
-    global snake_direction
-    if snake_direction != "left":
-        snake_direction = "right"
-
-
-def go_down():
-    global snake_direction
-    if snake_direction != "up":
-        snake_direction = "down"
-
-
-def go_left():
-    global snake_direction
-    if snake_direction != "right":
-        snake_direction = "left"
-
-
-# CREATE WINDOW WHERE TURTLE WILL DRAW
-drawing_board = turtle.Screen()
-drawing_board.setup(WIDTH, HEIGHT)
-drawing_board.title("Snake")
-drawing_board.bgcolor("yellow")
-drawing_board.tracer(0)  # TURN OFF AUTO-ANIMATION
-
-# EVENT HANDLERS
-drawing_board.listen()
-drawing_board.onkey(go_up, "Up")
-drawing_board.onkey(go_right, "Right")
-drawing_board.onkey(go_down, "Down")
-drawing_board.onkey(go_left, "Left")
-
-# CREATE A TURTLE
-slithery_snake = turtle.Turtle()
-slithery_snake.shape("square")
-slithery_snake.color("cyan")
-slithery_snake.penup()  # TO PREVENT MARKING WHILE MOVING
+    if direction == "up":
+        if snake_direction != "down":     # AVOID COLLISION BY WRONG KEY PRESS
+            snake_direction = "up"
+    elif direction == "down":
+        if snake_direction != "up":     # AVOID COLLISION BY WRONG KEY PRESS
+            snake_direction = "down"
+    elif direction == "left":
+        if snake_direction != "right":     # AVOID COLLISION BY WRONG KEY PRESS
+            snake_direction = "left"
+    elif direction == "right":
+        if snake_direction != "left":     # AVOID COLLISION BY WRONG KEY PRESS
+            snake_direction = "right"
 
 
 # MOVE THE SNAKE
@@ -79,7 +57,7 @@ def game_loop():
 
         # CHECK FOR FOOD COLLISION
         if not food_chomp():
-            snake.pop(0)  # MAINTAIN SNAKE LENGTH / REMOVE LAST TAIL SEGMENT
+            snake.pop(0)  # MAINTAIN SNAKE LENGTH / REMOVE LAST TAIL SEGMENT UNLESS FED
 
         # DRAW THE SNAKE
         for segment in snake:
@@ -144,6 +122,26 @@ def reset_snake():
     food.goto(food_spot)
 
     game_loop()
+
+
+# CREATE WINDOW WHERE TURTLE WILL DRAW
+drawing_board = turtle.Screen()
+drawing_board.setup(WIDTH, HEIGHT)
+drawing_board.title("Snake")
+drawing_board.bgcolor("yellow")
+drawing_board.tracer(0)  # TURN OFF AUTO-ANIMATION
+
+
+# EVENT HANDLERS
+drawing_board.listen()
+bind_direction_keys()
+
+
+# CREATE A TURTLE
+slithery_snake = turtle.Turtle()
+slithery_snake.shape("square")
+slithery_snake.color("cyan")
+slithery_snake.penup()  # TO PREVENT MARKING WHILE MOVING
 
 
 # FOOD
